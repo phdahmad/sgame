@@ -1,76 +1,122 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>مهمة الأمن السيبراني</title>
+<title>مهمة الأمن السيبراني - إصدار الصوت المحسن</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
-body{background:linear-gradient(135deg,#0f172a,#1d4ed8,#60a5fa);min-height:100vh;color:#fff}
-.cardx{background:rgba(255,255,255,.12);backdrop-filter:blur(18px);border-radius:30px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.answer{margin:10px 0;padding:16px;border-radius:15px;border:none;width:100%;font-size:20px}
-.correct{background:#22c55e!important;color:#fff}
-.wrong{background:#ef4444!important;color:#fff}
-.qr-card{background:rgba(255,255,255,.9);color:#000;border-radius:20px;padding:15px;display:inline-block}
+body{background:linear-gradient(135deg,#0f172a,#2563eb,#60a5fa);color:#fff;min-height:100vh}
+.cardx{max-width:900px;margin:30px auto;padding:30px;border-radius:30px;background:rgba(255,255,255,.12);backdrop-filter:blur(16px)}
+.answer{margin:10px 0}
+.correct{background:#22c55e!important;color:#fff!important}
+.wrong{background:#ef4444!important;color:#fff!important}
+.qr-card{background:#fff;color:#000;border-radius:20px;padding:15px;display:inline-block}
 </style>
 </head>
 <body>
-<div class="container py-5">
-<div class="cardx text-center mx-auto" style="max-width:900px" id="app"></div>
-</div>
+<div id="app" class="cardx text-center"></div>
 
 <script>
+let audioCtx=null;
+
+function initAudio(){
+ if(!audioCtx){
+   audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+ }
+ if(audioCtx.state==="suspended"){audioCtx.resume();}
+}
+
+function playMelody(notes,duration=0.15){
+ initAudio();
+ let start=audioCtx.currentTime;
+
+ notes.forEach(freq=>{
+   const osc=audioCtx.createOscillator();
+   const gain=audioCtx.createGain();
+
+   osc.type='square'; // أعلى وأوضح
+
+   osc.frequency.value=freq;
+
+   osc.connect(gain);
+   gain.connect(audioCtx.destination);
+
+   gain.gain.setValueAtTime(0.35,start);
+   gain.gain.exponentialRampToValueAtTime(0.001,start+duration);
+
+   osc.start(start);
+   osc.stop(start+duration);
+
+   start += duration*0.8;
+ });
+}
+
+const startSound=()=>playMelody([523,659,784,1046]);
+const successSound=()=>playMelody([659,784,988,1318,1568],0.12);
+const failSound=()=>playMelody([392,330,262],0.20);
+
+const QR=`<div class="qr-card mt-4">
+<h5>📱 العب من جوالك</h5>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://phdahmad.github.io/sgame/" width="180">
+</div>`;
+
 const questions=[
 {q:"وصلك رابط جائزة مجهول، ماذا تفعلين؟",o:["أضغط عليه","أتأكد من المصدر","أرسله للجميع"],a:1,e:"المصدر الموثوق أولاً."},
 {q:"ما أفضل كلمة مرور؟",o:["123456","password","طويلة ومعقدة"],a:2,e:"الكلمات الطويلة أكثر أماناً."},
-{q:"ما هو الاختراق الأمني؟",o:["وصول غير مصرح","تحديث الجهاز","تنظيف الملفات"],a:0,e:"وصول غير مصرح للبيانات."},
-{q:"التحقق بخطوتين...",o:["يزيد الحماية","غير مهم"],a:0,e:"طبقة أمان إضافية."},
-{q:"شبكة واي فاي مفتوحة دائماً آمنة",o:["صح","خطأ"],a:1,e:"قد تعرض البيانات للخطر."}
+{q:"ما هو الاختراق الأمني؟",o:["وصول غير مصرح","تحديث الجهاز","تنظيف الملفات"],a:0,e:"وصول غير مصرح للبيانات."}
 ];
 
 function home(){
 app.innerHTML=`
-<i class="fa-solid fa-shield-halved fa-5x text-warning mb-3"></i>
 <h1>🚨 مهمة الأمن السيبراني</h1>
-<p class="fs-4">ساعدي في حماية البيانات من المخترقين</p>
-
-<button class="btn btn-warning btn-lg mb-4" onclick="newMission()">🚀 ابدأ المهمة</button>
-
-<div class="qr-card">
-<h5><i class="fa-solid fa-qrcode"></i> العب من جوالك</h5>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://phdahmad.github.io/sgame/" width="220">
-<p class="mt-2">امسحي الباركود للدخول مباشرة</p>
-</div>`;
+<p>اضغطي ابدأ ثم جربي الإجابة</p>
+<button class="btn btn-warning btn-lg" onclick="newQuestion()">🚀 ابدأ المهمة</button>
+${QR}`;
 }
 
-function newMission(){
-const q=questions[Math.floor(Math.random()*questions.length)];
-window.q=q;
-app.innerHTML=`<h2>🚨 تنبيه أمني</h2><h1 class="my-4">${q.q}</h1><div id="answers"></div><div id="feedback"></div>`;
-q.o.forEach((x,i)=>{
-let b=document.createElement('button');
-b.className='answer btn btn-light';
-b.innerText=x;
-b.onclick=()=>answer(i,b);
-answers.appendChild(b);
-});
+function newQuestion(){
+ startSound();
+
+ const q=questions[Math.floor(Math.random()*questions.length)];
+ window.qq=q;
+
+ app.innerHTML=`<h2>${q.q}</h2><div id="ans"></div><div id="fb"></div>`;
+
+ q.o.forEach((t,i)=>{
+  const b=document.createElement('button');
+  b.className='btn btn-light answer w-100';
+  b.innerText=t;
+  b.onclick=()=>answer(i,b);
+  ans.appendChild(b);
+ });
 }
 
 function answer(i,b){
-document.querySelectorAll('.answer').forEach(x=>x.disabled=true);
-if(i===q.a){
-confetti({particleCount:120,spread:90});
-b.classList.add('correct');
-feedback.innerHTML=`<div class="alert alert-success">🛡️ تم إحباط محاولة الاختراق<br>${q.e}</div>`;
-}else{
-b.classList.add('wrong');
-document.querySelectorAll('.answer')[q.a].classList.add('correct');
-feedback.innerHTML=`<div class="alert alert-danger">💀 الإجابة الصحيحة: ${q.o[q.a]}<br>${q.e}</div>`;
+ document.querySelectorAll('.answer').forEach(x=>x.disabled=true);
+
+ if(i===qq.a){
+   successSound();
+   confetti({particleCount:120,spread:90});
+   b.classList.add('correct');
+   fb.innerHTML=`<div class="alert alert-success">🛡️ تم إحباط محاولة الاختراق</div>`;
+ }else{
+   failSound();
+   b.classList.add('wrong');
+   document.querySelectorAll('.answer')[qq.a].classList.add('correct');
+   fb.innerHTML=`<div class="alert alert-danger">💀 الإجابة الصحيحة: ${qq.o[qq.a]}</div>`;
+ }
+
+ fb.innerHTML += `
+ <div class="mt-3">
+ <button class="btn btn-warning m-2" onclick="newQuestion()">🎲 سؤال جديد</button>
+ <button class="btn btn-outline-light m-2" onclick="home()">🏠 الصفحة الرئيسية</button>
+ </div>
+ ${QR}`;
 }
-feedback.innerHTML += '<button class="btn btn-warning m-2" onclick="newMission()">🎲 مهمة جديدة</button><button class="btn btn-outline-light m-2" onclick="home()">🔄 إعادة تعيين</button>';
-}
+
 home();
 </script>
 </body>
