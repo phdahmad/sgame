@@ -2,150 +2,75 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>سؤال الأمن السيبراني العشوائي</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مهمة الأمن السيبراني</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
-body{
-margin:0;font-family:Tahoma,Arial,sans-serif;
-background:linear-gradient(135deg,#0b5ed7,#5dade2);
-min-height:100vh;display:flex;justify-content:center;align-items:center;
-overflow:hidden;transition:.5s;
-}
-.floating{position:absolute;font-size:28px;opacity:.15;animation:float 12s linear infinite}
-@keyframes float{from{transform:translateY(110vh)}to{transform:translateY(-120px)}}
-.card{
-background:#fff;width:92%;max-width:850px;padding:30px;border-radius:25px;
-box-shadow:0 15px 40px rgba(0,0,0,.25);text-align:center;
-}
-h1{color:#1565c0}
-.btn,.option{
-border:none;border-radius:14px;padding:15px;margin:10px 0;
-font-size:18px;cursor:pointer;width:100%;
-}
-.btn{background:#1565c0;color:white}
-.option{background:#eef5ff}
-.option:hover{background:#dbeaff;transform:scale(1.02)}
-.correct{background:#b9f6ca!important}
-.wrong{background:#ffcdd2!important}
-#feedback{margin-top:15px;font-size:22px;font-weight:bold}
-.flash-green{background:linear-gradient(135deg,#2e7d32,#66bb6a)!important}
-.flash-red{background:linear-gradient(135deg,#b71c1c,#ef5350)!important}
+body{background:linear-gradient(135deg,#0f172a,#1d4ed8,#60a5fa);min-height:100vh;color:#fff}
+.cardx{background:rgba(255,255,255,.12);backdrop-filter:blur(18px);border-radius:30px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.answer{margin:10px 0;padding:16px;border-radius:15px;border:none;width:100%;font-size:20px}
+.correct{background:#22c55e!important;color:#fff}
+.wrong{background:#ef4444!important;color:#fff}
+.qr-card{background:rgba(255,255,255,.9);color:#000;border-radius:20px;padding:15px;display:inline-block}
 </style>
 </head>
 <body>
-
-<div class="floating" style="left:10%">🛡️</div>
-<div class="floating" style="left:25%;animation-delay:2s">🔒</div>
-<div class="floating" style="left:45%;animation-delay:5s">💻</div>
-<div class="floating" style="left:65%;animation-delay:1s">🔐</div>
-<div class="floating" style="left:85%;animation-delay:4s">🛡️</div>
-
-<div class="card" id="app"></div>
+<div class="container py-5">
+<div class="cardx text-center mx-auto" style="max-width:900px" id="app"></div>
+</div>
 
 <script>
 const questions=[
-{q:"ما هو الاختراق الأمني؟",o:["وصول غير مصرح للبيانات","تحديث البرامج","تنظيف الجهاز"],a:0,e:"هو وصول شخص غير مصرح له إلى البيانات أو الأنظمة."},
-{q:"أي مما يلي قد يسبب الاختراق؟",o:["روابط مجهولة","كلمة مرور قوية","تحديث الجهاز"],a:0,e:"الروابط المجهولة قد تكون خطيرة."},
-{q:"استخدام واي فاي غير محمي آمن.",o:["صح","خطأ"],a:1,e:"الشبكات غير المحمية تعرض البيانات للخطر."},
-{q:"من أضرار الاختراق؟",o:["سرقة المعلومات","زيادة السرعة","شحن البطارية"],a:0,e:"قد تتم سرقة المعلومات الشخصية."},
-{q:"مشاركة كلمة المرور مع الغرباء آمن.",o:["صح","خطأ"],a:1,e:"لا تشارك كلمة المرور أبداً."},
-{q:"أفضل كلمة مرور هي:",o:["123456","password","طويلة ومعقدة"],a:2,e:"الكلمات الطويلة والمعقدة أكثر أماناً."},
-{q:"التحديثات الأمنية مهمة.",o:["صح","خطأ"],a:0,e:"التحديثات تسد الثغرات الأمنية."},
-{q:"التحقق بخطوتين يزيد الحماية.",o:["صح","خطأ"],a:0,e:"طبقة أمان إضافية مهمة."},
-{q:"وصلك رابط جائزة مجهول.",o:["أضغط عليه","أتأكد من المصدر","أرسله للجميع"],a:1,e:"يجب التأكد من المصدر أولاً."},
-{q:"لحماية نفسك من الاختراق:",o:["كلمة مرور قوية","مشاركة المعلومات","تجاهل التحديثات"],a:0,e:"ابدئي دائماً بكلمة مرور قوية."}
+{q:"وصلك رابط جائزة مجهول، ماذا تفعلين؟",o:["أضغط عليه","أتأكد من المصدر","أرسله للجميع"],a:1,e:"المصدر الموثوق أولاً."},
+{q:"ما أفضل كلمة مرور؟",o:["123456","password","طويلة ومعقدة"],a:2,e:"الكلمات الطويلة أكثر أماناً."},
+{q:"ما هو الاختراق الأمني؟",o:["وصول غير مصرح","تحديث الجهاز","تنظيف الملفات"],a:0,e:"وصول غير مصرح للبيانات."},
+{q:"التحقق بخطوتين...",o:["يزيد الحماية","غير مهم"],a:0,e:"طبقة أمان إضافية."},
+{q:"شبكة واي فاي مفتوحة دائماً آمنة",o:["صح","خطأ"],a:1,e:"قد تعرض البيانات للخطر."}
 ];
 
-function playTone(notes){
- const ctx=new (window.AudioContext||window.webkitAudioContext)();
- let t=ctx.currentTime;
- notes.forEach(n=>{
-   const o=ctx.createOscillator(), g=ctx.createGain();
-   o.connect(g); g.connect(ctx.destination);
-   o.frequency.value=n;
-   o.type='triangle';
-   g.gain.setValueAtTime(0.05,t);
-   g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
-   o.start(t); o.stop(t+0.18);
-   t+=0.12;
- });
-}
-function startSound(){playTone([523,659,784]);}
-function successSound(){playTone([659,784,988]);}
-function failSound(){playTone([392,330,262]);}
-
-function confetti(){
- for(let i=0;i<20;i++){
-   const e=document.createElement('div');
-   e.innerHTML=['🎉','✨','⭐'][Math.floor(Math.random()*3)];
-   e.style.position='fixed';
-   e.style.left=Math.random()*100+'vw';
-   e.style.top='-20px';
-   e.style.fontSize='30px';
-   e.style.transition='3s linear';
-   document.body.appendChild(e);
-   setTimeout(()=>{e.style.transform='translateY(110vh)';},10);
-   setTimeout(()=>e.remove(),3200);
- }
-}
-
 function home(){
- app.innerHTML=`
- <h1>🛡️ تحدي الأمن السيبراني</h1>
- <p>اضغطي ابدأ وسيتم سحب سؤال عشوائي واحد.</p>
- <button class="btn" onclick="newQuestion()">🚀 ابدأ اللعبة</button>`;
+app.innerHTML=`
+<i class="fa-solid fa-shield-halved fa-5x text-warning mb-3"></i>
+<h1>🚨 مهمة الأمن السيبراني</h1>
+<p class="fs-4">ساعدي في حماية البيانات من المخترقين</p>
+
+<button class="btn btn-warning btn-lg mb-4" onclick="newMission()">🚀 ابدأ المهمة</button>
+
+<div class="qr-card">
+<h5><i class="fa-solid fa-qrcode"></i> العب من جوالك</h5>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://phdahmad.github.io/sgame/" width="220">
+<p class="mt-2">امسحي الباركود للدخول مباشرة</p>
+</div>`;
 }
 
-function newQuestion(){
- startSound();
- const q=questions[Math.floor(Math.random()*questions.length)];
- window.currentQ=q;
-
- app.innerHTML=`
- <h2>🎲 سؤال عشوائي</h2>
- <h1>${q.q}</h1>
- <div id="opts"></div>
- <div id="feedback"></div>`;
-
- const opts=document.getElementById('opts');
-
- q.o.forEach((txt,i)=>{
-   const b=document.createElement('button');
-   b.className='option';
-   b.innerText=txt;
-   b.onclick=()=>answer(i,b,q);
-   opts.appendChild(b);
- });
+function newMission(){
+const q=questions[Math.floor(Math.random()*questions.length)];
+window.q=q;
+app.innerHTML=`<h2>🚨 تنبيه أمني</h2><h1 class="my-4">${q.q}</h1><div id="answers"></div><div id="feedback"></div>`;
+q.o.forEach((x,i)=>{
+let b=document.createElement('button');
+b.className='answer btn btn-light';
+b.innerText=x;
+b.onclick=()=>answer(i,b);
+answers.appendChild(b);
+});
 }
 
-function answer(i,b,q){
- document.querySelectorAll('.option').forEach(x=>x.disabled=true);
-
- if(i===q.a){
-   b.classList.add('correct');
-   successSound();
-   confetti();
-   document.body.classList.add('flash-green');
-   feedback.innerHTML=`🎉 أحسنتِ!<br>${q.e}`;
- }else{
-   b.classList.add('wrong');
-   document.querySelectorAll('.option')[q.a].classList.add('correct');
-   failSound();
-   document.body.classList.add('flash-red');
-   feedback.innerHTML=`❌ الإجابة الصحيحة: <b>${q.o[q.a]}</b><br>${q.e}`;
- }
-
- setTimeout(()=>{
-   document.body.classList.remove('flash-green','flash-red');
- },1200);
-
- const btn=document.createElement('button');
- btn.className='btn';
- btn.innerHTML='🎲 اسحبي سؤالاً جديداً';
- btn.onclick=newQuestion;
- app.appendChild(btn);
+function answer(i,b){
+document.querySelectorAll('.answer').forEach(x=>x.disabled=true);
+if(i===q.a){
+confetti({particleCount:120,spread:90});
+b.classList.add('correct');
+feedback.innerHTML=`<div class="alert alert-success">🛡️ تم إحباط محاولة الاختراق<br>${q.e}</div>`;
+}else{
+b.classList.add('wrong');
+document.querySelectorAll('.answer')[q.a].classList.add('correct');
+feedback.innerHTML=`<div class="alert alert-danger">💀 الإجابة الصحيحة: ${q.o[q.a]}<br>${q.e}</div>`;
 }
-
+feedback.innerHTML += '<button class="btn btn-warning m-2" onclick="newMission()">🎲 مهمة جديدة</button><button class="btn btn-outline-light m-2" onclick="home()">🔄 إعادة تعيين</button>';
+}
 home();
 </script>
 </body>
